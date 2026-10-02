@@ -854,7 +854,7 @@ MSO5 series & tektronix & lan, lxi &  \\
 \thinhline
 MSO6 series & tektronix & lan, lxi &  \\
 \thinhline
-MDO3000 series & tektronix & lan, lxi & Analog channels, edge trigger and DVM only. See notes below. \\
+MDO3000 series & tektronix & lan, lxi & Analog channels, edge trigger, DVM and AFG. See notes below. \\
 \thickhline
 \end{tabularx}
 
@@ -901,11 +901,18 @@ and time/div, so the driver adjusts time/div to give the requested rate. Changin
 constant and changes the capture duration.
 \item Trigger: edge trigger on any analog channel, trigger position
 \item Digital voltmeter option (DVM)
-\item Arbitrary function generator option (MDO3AFG), untested
+\item Arbitrary function generator option (MDO3AFG). Amplitude and offset are specified into the selected load
+impedance, as on the instrument front panel.
 \end{itemize}
+
+Options are detected with the CONFIGuration queries rather than \texttt{*OPT?}, which does not list every usable
+option on this family.
 
 Not yet supported: the RF input / spectrum analyzer (MDO3SA), the 16 digital channels (MDO3MSO), and trigger types
 other than edge. The MDO3000 has no external trigger input, so none is shown.
+
+The driver runs the instrument in single sequence mode, in which the MDO3000 does not auto trigger. If no trigger
+event occurs, use Force Trigger.
 
 Note that the instrument SCPI parser stalls for several seconds if it receives a command it does not understand, so
 please file a bug report if you see timeouts in the log.
