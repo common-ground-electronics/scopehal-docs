@@ -853,6 +853,8 @@ The hardware supports USBTMC, however waveform download via USBTMC does not work
 MSO5 series & tektronix & lan, lxi &  \\
 \thinhline
 MSO6 series & tektronix & lan, lxi &  \\
+\thinhline
+MDO3000 series & tektronix & lan, lxi & Analog channels, edge trigger and DVM only. See notes below. \\
 \thickhline
 \end{tabularx}
 
@@ -879,6 +881,34 @@ commands. To remove the prompts and help text, go to Utility | I/O, then under t
 4 & 500K & 3.8 - 3.9 \\
 \thickhline
 \end{tabularx}
+
+\subsection{MDO3000 series}
+
+Developed and tested on a MDO3024 (firmware v1.30) using the ``lan" transport. The MDO3000 socket server listens on
+TCP port 4000, not the IANA default of 5025, so the port must be specified explicitly:
+
+\begin{lstlisting}[language=sh, numbers=none]
+ngscopeclient myscope:tektronix:lan:192.168.1.127:4000
+\end{lstlisting}
+
+Supported features:
+
+\begin{itemize}
+\item Analog channels: enable/disable, coupling, termination, bandwidth limit, vertical scale and offset, probe
+attenuation, channel labels, deskew, TekVPI probe detection (including current probes)
+\item Timebase: record length (1K to 10M points) and sample rate. The instrument derives sample rate from record length
+and time/div, so the driver adjusts time/div to give the requested rate. Changing record length keeps the sample rate
+constant and changes the capture duration.
+\item Trigger: edge trigger on any analog channel, trigger position
+\item Digital voltmeter option (DVM)
+\item Arbitrary function generator option (MDO3AFG), untested
+\end{itemize}
+
+Not yet supported: the RF input / spectrum analyzer (MDO3SA), the 16 digital channels (MDO3MSO), and trigger types
+other than edge. The MDO3000 has no external trigger input, so none is shown.
+
+Note that the instrument SCPI parser stalls for several seconds if it receives a command it does not understand, so
+please file a bug report if you see timeouts in the log.
 
 \section{tinySA}
 
